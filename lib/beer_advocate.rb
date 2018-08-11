@@ -1,6 +1,7 @@
 require 'nokogiri'
 require 'open-uri'
 require 'uri'
+require 'cgi'
 
 require 'beer_advocate/version'
 
@@ -12,7 +13,7 @@ module BeerAdvocate
     ## search result.  Throws an exception if something goes wrong.
     def get_url!(beer_name)
       search_url = "http://www.beeradvocate.com/search/?qt=beer&q=" +
-        URI.escape(beer_name)
+        CGI.escape(beer_name)
 
       page = Nokogiri::HTML(open(search_url))
 
@@ -36,11 +37,11 @@ module BeerAdvocate
     def get_beer_details_from_url!(url)
       page = Nokogiri::HTML(open(url))
 
-      table = page.css('#ba-content table')[1]
+      table = page.css('#info_box')
 
       beer_name = page.css('div.titleBar h1')[0].children[0].text
 
-      beer_score = table.css('.ba-score').text
+      beer_score = page.css('.ba-ravg').text
 
       beer_style = table.css('a').
         select {|tag| tag.attributes['href'].value.match(%r{^/beer/style/\d+/?$}) }.
@@ -52,14 +53,14 @@ module BeerAdvocate
         map {|tag| tag.text}.
         first
 
-      m = table.to_s.match(/ \| [^\d]{0,9} (\d+ \. \d+ \%) /x)
+      m = table.to_s.match(/(\d+\.\d+\%)/x)
       beer_abv = m[1]
 
       {
         name: beer_name,
         score: beer_score,
         style: beer_style,
-        abv: beer_abv,
+      	abv: beer_abv,
         brewery: beer_brewery
       }
     end

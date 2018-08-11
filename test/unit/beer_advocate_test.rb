@@ -59,7 +59,7 @@ describe BeerAdvocate do
       correct_details = JSON.parse(<<-EOT)
         {
           "name": "Charles River Porter",
-          "score": "89",
+	  "score": "3.95",
           "style": "American Porter",
           "abv": "5.90%",
           "brewery": "Cambridge Brewing Company"

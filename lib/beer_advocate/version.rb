@@ -1,5 +1,5 @@
 module BeerAdvocate
-  VERSION = '0.1.1'
-  VERSION_DATE = '2015-09-15'
+  VERSION = '0.1.2'
+  VERSION_DATE = '2018-09-10'
 end
 
